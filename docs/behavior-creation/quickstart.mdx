@@ -1,0 +1,54 @@
+---
+title: "Quickstart"
+description: "Create your first Agent Behavior spec."
+---
+
+In this tutorial, you'll create a behavior spec for cost-sensitive actions.
+
+## Create the behavior
+
+Create `.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md` in your project. The repository's canonical example lives at `examples/.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md`.
+
+Use this structure:
+
+```markdown .agents/behaviors/cost-sensitive-actions/BEHAVIOR.md
+---
+name: cost-sensitive-actions
+description: Ensure the agent surfaces material costs, asks before expensive actions, and offers lower-cost alternatives when appropriate.
+---
+
+# Cost-sensitive actions
+
+Describe when cost-sensitive behavior applies, what cost evidence the agent should gather, how it should make the tradeoff visible, and what it should avoid.
+```
+
+## Review it against the schema
+
+A good behavior spec answers four questions:
+
+1. What evidence should the agent gather?
+2. What decision should the agent make from that evidence?
+3. What should the agent do after deciding?
+4. What should the agent do when evidence is incomplete or the first path fails?
+
+For cost-sensitive actions:
+
+- **Evidence:** inspect or estimate cost, credits, infrastructure impact, and alternatives.
+- **Decision:** determine whether the action creates a material cost tradeoff.
+- **Execution:** surface the cost and ask before crossing meaningful thresholds.
+- **Recovery:** if cost is unknown, inspect more, ask for confirmation, or mark uncertainty.
+
+## Use it
+
+You can use this behavior spec to:
+
+- review traces where the agent deployed infrastructure, called paid APIs, or chose expensive options
+- write eval cases that check whether the agent surfaced material costs
+- revise prompts or tools when traces show the behavior is missing
+- communicate intended agent conduct to teammates
+
+## Next steps
+
+- Read the [specification](/specification)
+- Add more behaviors under `.agents/behaviors/`
+- Use behavior specs as the source of truth when creating evals or trace-review rubrics

@@ -1,0 +1,59 @@
+---
+title: "Agent Behavior"
+description: "A standard format for describing expected agent behavior for trace review and evaluation."
+---
+
+Agent Behavior is a file format for documenting behavior an AI agent is expected to follow across repeated interactions.
+
+Behavior specs live in `.agents/behaviors/`. Each spec is a directory with a required `BEHAVIOR.md` file.
+
+```text
+.agents/behaviors/
+└── financial-work-verification/
+    └── BEHAVIOR.md
+```
+
+A behavior spec defines the standard before a reviewer, rubric, scorer, or eval checks whether the agent met it.
+
+See the [specification](/specification) for the full format.
+
+## What belongs in a behavior spec?
+
+Add a behavior spec when the behavior is:
+
+- **Frequent**: it appears in a meaningful share of the agent's work.
+- **High-impact**: mistakes affect correctness, trust, safety, cost, or user experience.
+- **Agent-defining**: it captures a design choice about what kind of agent this is.
+- **Ambiguous by default**: reasonable agents might handle it differently unless it is stated.
+- **Spread across context**: a reviewer would otherwise need to read prompts, tools, skills, examples, traces, or evals to infer it.
+- **Useful for debugging**: naming the behavior helps explain failures in real traces.
+
+Do not use behavior specs for every instruction the agent has received. Leave out rare low-risk details, tool syntax, one-off procedures, slogans, and eval implementation details unless they express an important behavioral commitment.
+
+## Relationship to other artifacts
+
+A behavior spec states the expected behavior. Other artifacts implement, support, or test it.
+
+| Artifact | Relationship |
+| --- | --- |
+| System prompts | Runtime instructions. They may include behavior commitments, but are written for model execution. |
+| Skills | Task-specific procedures, references, scripts, or domain guidance. Behavior specs may say when and why to use skills, but should not duplicate them. |
+| Tool docs | Available operations and API constraints. Behavior specs may state expectations around tool use, but should not become tool manuals. |
+| Evals | Tests of whether behavior occurred. Behavior specs inform eval design but do not contain scorer implementation details. |
+| Traces | Records of what the agent did. Behavior specs describe what the agent was expected to do. |
+
+## Behavior specs vs. `AGENTS.md`
+
+| Dimension | `AGENTS.md` | `BEHAVIOR.md` |
+| --- | --- | --- |
+| Purpose | Tell the agent how to act | Define what counts as good behavior |
+| Audience | The agent at runtime | Reviewers, eval authors, and agents reviewing traces |
+| Optimized for | Prompt performance and correct next steps | Clear expectations and failure modes |
+| Granularity | Operational and tool-aware | Durable behavior patterns |
+| Changes when | The implementation changes | The behavioral standard changes |
+
+## Next steps
+
+- Read the [specification](/specification)
+- Create your first behavior with the [quickstart](/behavior-creation/quickstart)
+- Add support to a client with the [implementation guide](/client-implementation/adding-behaviors-support)

@@ -1,0 +1,108 @@
+---
+title: "How to add behavior support to your agent tooling"
+sidebarTitle: "Adding behavior support"
+description: "A guide for discovering Agent Behavior specs and using them in trace review, evals, and prompt alignment."
+---
+
+This guide describes how to add Agent Behavior support to an agent platform, eval system, trace viewer, or development tool.
+
+## Core principle
+
+See the [specification](/specification#terminology) for terminology.
+
+Behavior specs are a source of truth for intended behavior. They are not primarily a runtime activation mechanism like skills. Do not automatically inject all behavior specs into runtime prompts unless you are intentionally building a behavior-conditioned agent.
+
+The key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** in this guide are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+
+A behavior-compatible tool should help users:
+
+1. discover behavior specs
+2. load their full content when needed
+3. compare traces, evals, prompts, skills, and tools against those specs
+
+## Step 1: Discover behaviors
+
+Scan for behavior directories under `.agents/behaviors/`.
+
+Common scopes:
+
+| Scope | Path | Purpose |
+| --- | --- | --- |
+| Project | `<project>/.agents/behaviors/` | Behaviors specific to a repository or agent project |
+| User | `~/.agents/behaviors/` | Behaviors shared across projects |
+| Organization | configured path or registry | Behaviors managed centrally |
+
+Within each behaviors directory, look for subdirectories containing a file named exactly `BEHAVIOR.md`. Clients MUST look for `BEHAVIOR.md` when discovering behavior specs. Clients MAY accept case variants for compatibility, but portable behavior specs should use `BEHAVIOR.md`:
+
+```text
+.agents/behaviors/
+├── cost-sensitive-actions/
+│   └── BEHAVIOR.md
+└── financial-work-verification/
+    └── BEHAVIOR.md
+```
+
+## Step 2: Parse `BEHAVIOR.md`
+
+Extract YAML frontmatter and Markdown body.
+
+Required fields:
+
+- `name`
+- `description`
+
+Store at least:
+
+| Field | Description |
+| --- | --- |
+| `name` | Stable behavior identifier |
+| `description` | Short description of what the behavior covers |
+| `location` | Path to the `BEHAVIOR.md` file |
+
+The body may be loaded immediately or lazily when a user reviews the behavior.
+
+If a behavior spec is structurally invalid, skip it and surface a diagnostic rather than silently loading a partial or ambiguous spec.
+
+## Trust and provenance
+
+Treat behavior specs as untrusted input unless they come from a trusted source. Project-level specs, user-level specs, and organization registry entries can be malicious or compromised.
+
+This matters because behavior spec content may be used to generate evals, guide trace review, audit prompts, or intentionally condition runtime agents. Before feeding third-party behavior specs into model prompts or automated eval-generation workflows, preserve provenance, apply the same trust checks you use for repository content, and make it clear to users which specs influenced the output.
+
+## Step 3: Surface behaviors in tools
+
+Behavior specs are useful in several product surfaces:
+
+- **Trace review:** show relevant behaviors alongside a trace and allow reviewers to mark evidence, compliance, uncertainty, and failure modes.
+- **Eval authoring:** use behavior specs to generate eval prompts, rubrics, assertions, or labels.
+- **Prompt auditing:** compare system prompts and runtime instructions against behavior commitments.
+- **Regression debugging:** identify which intended behavior a failing trace violated.
+- **Documentation:** generate an agent behavior inventory for stakeholders.
+
+## Step 4: Link traces to behaviors
+
+A trace may relate to zero, one, or many behavior specs. Matching can be manual, model-assisted, or rule-based.
+
+For each relevant behavior, reviewers or evaluators can ask:
+
+- Did the agent gather the right evidence?
+- Did it make the right decision from that evidence?
+- Did it execute the expected visible action?
+- Did it recover appropriately when blocked or uncertain?
+- Did any listed failure mode occur?
+
+## Step 5: Keep evals derived from specs
+
+Evals should quantify or audit the behaviors described in the spec. Avoid letting eval implementation details become the source of truth.
+
+When behavior expectations change:
+
+1. update the relevant `BEHAVIOR.md`
+2. update prompts, skills, tools, or product affordances as needed
+3. update evals and rubrics to measure the new intended behavior
+
+## Runtime use is optional
+
+Some agents may choose to include behavior summaries in runtime prompts, but this is optional. If runtime prompts include behavior commitments, they should generally contain concise summaries rather than the entire behavior corpus.
+
+The canonical behavior definition remains in `.agents/behaviors/<name>/BEHAVIOR.md`.

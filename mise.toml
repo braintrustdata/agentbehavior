@@ -1,0 +1,11 @@
+# Mise will automatically read and use .tool-versions files as well as this file.
+
+[settings]
+experimental = true
+
+[tools]
+nodejs = "24.15.0"
+pnpm = "10.33.0"
+
+[hooks]
+postinstall = "pnpm install --frozen-lockfile"

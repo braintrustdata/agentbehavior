@@ -78,10 +78,6 @@ The documentation source is in `docs/`. Until hosted docs are published, use the
 - [Quickstart](docs/behavior-creation/quickstart.mdx)
 - [Client implementation guide](docs/client-implementation/adding-behaviors-support.mdx)
 
-## Open development
-
-The behavior spec format is being developed openly through a collaboration between Basis and Braintrust. The goal is to make `.agents/behaviors/` and `BEHAVIOR.md` a shared convention that agent builders can adopt, critique, and improve together.
-
 ## License
 
 Apache 2.0. See [LICENSE](LICENSE).

@@ -1,6 +1,7 @@
 packages:
   - docs
   - packages/*
+  - examples/*
 
 blockExoticSubdeps: true
 minimumReleaseAge: 4320 # 3 days (in minutes)

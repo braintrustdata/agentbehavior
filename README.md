@@ -56,6 +56,8 @@ See the canonical examples for complete behavior specs:
 - [`cost-sensitive-actions`](examples/.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md) — cost and budget tradeoffs
 - [`financial-work-verification`](examples/.agents/behaviors/financial-work-verification/BEHAVIOR.md) — quality and correctness for financial work
 
+There is also a small runnable example agent at [`examples/financial-verification-agent`](examples/financial-verification-agent/README.md) that uses the `financial-work-verification` behavior with the Braintrust Gateway and includes a Braintrust LLM-as-a-judge eval.
+
 ## CLI validator
 
 This repo includes a TypeScript CLI package in `packages/agentbehavior`:

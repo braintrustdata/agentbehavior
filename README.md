@@ -56,6 +56,18 @@ See the canonical examples for complete behavior specs:
 - [`cost-sensitive-actions`](examples/.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md) — cost and budget tradeoffs
 - [`financial-work-verification`](examples/.agents/behaviors/financial-work-verification/BEHAVIOR.md) — quality and correctness for financial work
 
+## CLI validator
+
+This repo includes a TypeScript CLI package in `packages/agentbehavior`:
+
+```bash
+agentbehavior validate .
+agentbehavior list .
+agentbehavior explain .agents/behaviors/cost-sensitive-actions
+```
+
+It validates structural requirements from the specification, including `BEHAVIOR.md` discovery, YAML frontmatter parsing, name and description constraints, `format_version`, and `metadata`.
+
 ## Documentation
 
 The documentation source is in `docs/`. Until hosted docs are published, use these source files:

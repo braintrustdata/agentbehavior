@@ -1,13 +1,19 @@
 {
-  "name": "agentbehavior",
+  "name": "@agentbehavior/repo",
   "private": true,
   "scripts": {
     "preinstall": "node -e \"const userAgent = process.env.npm_config_user_agent || ''; if (process.env.INIT_CWD === process.cwd() && !userAgent.includes('pnpm/')) { console.error('Use pnpm in this repo.'); process.exit(1); }\"",
-    "dev": "pnpm --filter @agentbehavior/docs dev"
+    "dev": "pnpm --filter @agentbehavior/docs dev",
+    "build": "vp run -r build",
+    "check": "vp check",
+    "test": "vp run -r test"
+  },
+  "devDependencies": {
+    "vite-plus": "^0.2.1"
   },
   "engines": {
-    "pnpm": ">=10.33.0",
     "npm": "please-use-pnpm",
+    "pnpm": ">=10.33.0",
     "yarn": "please-use-pnpm"
   },
   "packageManager": "pnpm@10.33.0"

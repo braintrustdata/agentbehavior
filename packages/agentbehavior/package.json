@@ -1,0 +1,36 @@
+{
+  "name": "agentbehavior",
+  "version": "0.1.0",
+  "description": "Validator and CLI for Agent Behavior specs.",
+  "bin": {
+    "agentbehavior": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "vp pack",
+    "check": "vp check",
+    "prepublishOnly": "vp pack",
+    "test": "vp test --run"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

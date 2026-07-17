@@ -22,9 +22,9 @@ description: Ensure the agent surfaces material costs, asks before expensive act
 Describe when cost-sensitive behavior applies, what cost evidence the agent should gather, how it should make the tradeoff visible, and what it should avoid.
 ```
 
-## Review it against the schema
+## Consider the recommended dimensions
 
-A good behavior spec answers four questions:
+The body is free-form Markdown, so choose the headings and labels that communicate the behavior clearly. These questions are strongly recommended authoring prompts when they add useful clarity:
 
 1. What evidence should the agent gather?
 2. What decision should the agent make from that evidence?
@@ -38,6 +38,12 @@ For cost-sensitive actions:
 - **Execution:** surface the cost and ask before crossing meaningful thresholds.
 - **Recovery:** if cost is unknown, inspect more, ask for confirmation, or mark uncertainty.
 
+You can answer these questions in ordinary prose, combine them, rename them, or omit ones that are trivial or redundant.
+
+## Group multiple behaviors when useful
+
+A `BEHAVIOR.md` can contain multiple related behaviors under one shared name and description. For example, an agent-level spec might use `## Page-grounded assistance`, `## Evidence-backed answers`, and `## Bias to action` as separate behavior sections. Use separate specs instead when the behaviors need independent discovery, ownership, or reuse.
+
 ## Use it
 
 You can use this behavior spec to:
@@ -50,5 +56,5 @@ You can use this behavior spec to:
 ## Next steps
 
 - Read the [specification](/specification)
-- Add more behaviors under `.agents/behaviors/`
+- Add behaviors to an existing related spec or create more specs under `.agents/behaviors/`
 - Use behavior specs as the source of truth when creating evals or trace-review rubrics

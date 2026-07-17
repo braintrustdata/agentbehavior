@@ -5,7 +5,7 @@ description: "A standard format for describing expected agent behavior for trace
 
 Agent Behavior is a file format for documenting behavior an AI agent is expected to follow across repeated interactions.
 
-Behavior specs live in `.agents/behaviors/`. Each spec is a directory with a required `BEHAVIOR.md` file.
+Behavior specs live in `.agents/behaviors/`. Each spec is a directory with a required `BEHAVIOR.md` file. A spec can document one behavior or group multiple related behaviors.
 
 ```text
 .agents/behaviors/
@@ -13,7 +13,7 @@ Behavior specs live in `.agents/behaviors/`. Each spec is a directory with a req
     └── BEHAVIOR.md
 ```
 
-A behavior spec defines the standard before a reviewer, rubric, scorer, or eval checks whether the agent met it.
+A behavior spec defines the standard before a reviewer, rubric, scorer, or eval checks whether the agent met it. Its Markdown body is free-form, with recommended dimensions available as flexible authoring guidance.
 
 See the [specification](/specification) for the full format.
 

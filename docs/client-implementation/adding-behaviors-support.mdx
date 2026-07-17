@@ -55,13 +55,13 @@ Store at least:
 
 | Field | Description |
 | --- | --- |
-| `name` | Stable behavior identifier |
-| `description` | Short description of what the behavior covers |
+| `name` | Stable behavior spec identifier |
+| `description` | Short description of the spec's scope |
 | `location` | Path to the `BEHAVIOR.md` file |
 
-The body may be loaded immediately or lazily when a user reviews the behavior.
+The body may be loaded immediately or lazily when a user reviews the spec. Treat it as free-form Markdown that can describe one or more behaviors. The recommended dimensions are flexible authoring guidance.
 
-If a behavior spec is structurally invalid, skip it and surface a diagnostic rather than silently loading a partial or ambiguous spec.
+Clients MUST treat the author's choice of body headings, labels, ordering, prose style, and number of behaviors as free-form content. If a behavior spec is structurally invalid, skip it and surface a diagnostic rather than silently loading a partial or ambiguous spec.
 
 ## Trust and provenance
 
@@ -81,7 +81,7 @@ Behavior specs are useful in several product surfaces:
 
 ## Step 4: Link traces to behaviors
 
-A trace may relate to zero, one, or many behavior specs. Matching can be manual, model-assisted, or rule-based.
+A trace may relate to zero, one, or many behavior specs—and to one or more behaviors within a grouped spec. Matching can be manual, model-assisted, or rule-based.
 
 For each relevant behavior, reviewers or evaluators can ask:
 

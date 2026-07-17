@@ -29,6 +29,37 @@ description: Invalid because the name does not match the directory.
   return projectPath;
 }
 
+async function createProjectWithMultipleFreeformBehaviors(): Promise<string> {
+  const projectPath = await mkdtemp(path.join(tmpdir(), "agentbehavior-cli-test-"));
+  temporaryDirectories.push(projectPath);
+
+  const behaviorDirectory = path.join(projectPath, ".agents", "behaviors", "loop");
+  await mkdir(behaviorDirectory, { recursive: true });
+  await writeFile(
+    path.join(behaviorDirectory, "BEHAVIOR.md"),
+    `---
+name: loop
+description: Expected conduct for Loop across Braintrust product surfaces.
+---
+
+# Loop
+
+Loop grounds assistance in the current Braintrust page and available data.
+
+## Page-grounded assistance
+
+Preserve the current page context and use known resources before asking the user to select one.
+
+## Evidence-backed answers
+
+Base conclusions on successful tool output and state when evidence is incomplete.
+`,
+    { flush: true },
+  );
+
+  return projectPath;
+}
+
 async function captureMain(
   argv: string[],
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
@@ -54,6 +85,26 @@ afterEach(async () => {
     temporaryDirectories.map((directory) => rm(directory, { recursive: true, force: true })),
   );
   temporaryDirectories = [];
+});
+
+describe("CLI validation", () => {
+  it("accepts multiple free-form behavior sections", async () => {
+    const projectPath = await createProjectWithMultipleFreeformBehaviors();
+
+    const { exitCode, stdout, stderr } = await captureMain(["validate", projectPath]);
+
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("Validated 1 behavior spec(s): no errors.");
+    expect(stderr).toBe("");
+  });
+
+  it("describes body structure as free-form in help", async () => {
+    const { exitCode, stdout } = await captureMain(["--help"]);
+
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain("BEHAVIOR.md bodies are free-form");
+    expect(stdout).toContain("one or more behaviors");
+  });
 });
 
 describe("CLI JSON output", () => {

@@ -4,7 +4,6 @@ import { parseDocument } from "yaml";
 
 export const BEHAVIORS_DIR = path.join(".agents", "behaviors");
 export const BEHAVIOR_FILE = "BEHAVIOR.md";
-export const DEFAULT_FORMAT_VERSION = 1;
 export const NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const MAX_NAME_LENGTH = 64;
 export const MAX_DESCRIPTION_LENGTH = 1024;
@@ -23,7 +22,6 @@ export interface Diagnostic {
 export interface BehaviorFrontmatter {
   name?: unknown;
   description?: unknown;
-  format_version?: unknown;
   license?: unknown;
   metadata?: unknown;
   [key: string]: unknown;
@@ -47,7 +45,6 @@ export interface ValidationResult {
 export interface BehaviorRecord {
   name: string;
   description: string;
-  format_version: number;
   metadata: Record<string, unknown>;
   location: string;
   body: string;
@@ -275,7 +272,6 @@ export function validateFrontmatter(
 
   const name = data.name;
   const description = data.description;
-  const formatVersion = data.format_version;
   const metadata = data.metadata;
 
   if (!isNonEmptyString(name)) {
@@ -332,16 +328,6 @@ export function validateFrontmatter(
       diagnostic({
         code: "description-too-long",
         message: `Frontmatter field \`description\` must be at most ${MAX_DESCRIPTION_LENGTH} characters.`,
-        file: filePath,
-      }),
-    );
-  }
-
-  if (formatVersion !== undefined && (!Number.isInteger(formatVersion) || formatVersion <= 0)) {
-    diagnostics.push(
-      diagnostic({
-        code: "format-version-invalid",
-        message: "Frontmatter field `format_version` must be a positive integer when present.",
         file: filePath,
       }),
     );
@@ -712,10 +698,6 @@ export function behaviorRecord(behavior: BehaviorValidation): BehaviorRecord | u
   return {
     name: frontmatter.name,
     description: frontmatter.description,
-    format_version:
-      typeof frontmatter.format_version === "number"
-        ? frontmatter.format_version
-        : DEFAULT_FORMAT_VERSION,
     metadata: isMapping(frontmatter.metadata) ? frontmatter.metadata : {},
     location: behavior.filePath,
     body: behavior.body ?? "",

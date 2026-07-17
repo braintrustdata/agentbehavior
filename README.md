@@ -10,7 +10,7 @@ See the [specification](docs/specification.mdx#terminology) for terminology.
 
 A behavior is not a low-level rule, a one-off task procedure, or a tool manual. It describes how an agent gathers context, makes decisions, acts, and recovers when it does not know enough.
 
-By convention, behavior specs live under `.agents/behaviors/`. Each behavior spec is a directory containing a file named exactly `BEHAVIOR.md`:
+By convention, behavior specs live under `.agents/behaviors/`. Each behavior spec is a directory containing a file named exactly `BEHAVIOR.md`. A spec can document one behavior or group multiple related behaviors:
 
 ```text
 .agents/behaviors/
@@ -43,7 +43,7 @@ Agent Behavior provides a durable middle layer: a place to clarify intended beha
 
 Behavior-compatible tools use behavior specs in three stages:
 
-1. **Discovery**: Find behavior directories under `.agents/behaviors/` and read each behavior's name and description.
+1. **Discovery**: Find behavior directories under `.agents/behaviors/` and read each spec's name and description.
 2. **Review or planning**: Load the full `BEHAVIOR.md` when reviewing traces, designing evals, or aligning runtime instructions.
 3. **Assessment**: Compare traces, prompts, tools, skills, or evals against the intended behaviors.
 
@@ -68,7 +68,7 @@ agentbehavior list .
 agentbehavior explain .agents/behaviors/cost-sensitive-actions
 ```
 
-It validates structural requirements from the specification, including `BEHAVIOR.md` discovery, YAML frontmatter parsing, name and description constraints, `format_version`, and `metadata`.
+It validates structural requirements from the specification, including `BEHAVIOR.md` discovery, YAML frontmatter parsing, name and description constraints, and `metadata`. It treats Markdown bodies as free-form content that may describe one or more behaviors.
 
 ## Documentation
 

@@ -44,7 +44,8 @@ function parseCliArgs(argv: string[]): ParsedArgs {
 }
 
 function usage(): string {
-  return `agentbehavior validates Agent Behavior specs.
+  return `agentbehavior structurally validates Agent Behavior specs.
+BEHAVIOR.md bodies are free-form and may describe one or more behaviors.
 
 Usage:
   agentbehavior validate [path] [--json]
@@ -151,7 +152,6 @@ function printBehavior(record: BehaviorRecord): void {
   process.stdout.write(`${"=".repeat(record.name.length)}\n\n`);
   process.stdout.write(`Description: ${record.description}\n`);
   process.stdout.write(`Location: ${displayPath(record.location)}\n`);
-  process.stdout.write(`Format version: ${record.format_version}\n`);
 
   if (Object.keys(record.metadata).length > 0) {
     process.stdout.write(`Metadata: ${JSON.stringify(record.metadata)}\n`);
@@ -164,7 +164,7 @@ function printBehavior(record: BehaviorRecord): void {
 
 async function runExplain(targetPath: string | undefined, json: boolean): Promise<number> {
   if (targetPath === undefined) {
-    process.stderr.write("error: explain requires a behavior path or BEHAVIOR.md file.\n");
+    process.stderr.write("error: explain requires a behavior spec path or BEHAVIOR.md file.\n");
     return 1;
   }
 
@@ -186,7 +186,7 @@ async function runExplain(targetPath: string | undefined, json: boolean): Promis
       process.stderr.write("No valid behavior spec found to explain.\n");
     } else {
       process.stderr.write(
-        "Path contains multiple behavior specs; pass a specific behavior directory or BEHAVIOR.md file.\n",
+        "Path contains multiple behavior specs; pass a specific behavior spec directory or BEHAVIOR.md file.\n",
       );
     }
   }
@@ -210,7 +210,7 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
 
   if (args.help || args.command === undefined) {
     process.stdout.write(usage());
-    return args.command === undefined ? 1 : 0;
+    return args.help ? 0 : 1;
   }
 
   if (args.command === "validate") return runValidate(args.path, args.json);

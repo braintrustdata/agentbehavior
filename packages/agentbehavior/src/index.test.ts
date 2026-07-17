@@ -63,7 +63,6 @@ Gather cost evidence, decide whether cost is material, ask before spending, and 
     expect(record).toMatchObject({
       name: "cost-sensitive-actions",
       description: "Ensure the agent surfaces material costs before expensive actions.",
-      format_version: 1,
       metadata: {},
     });
   });
@@ -129,7 +128,6 @@ description: [unterminated
       `---
 name: Bad_Name
 description: ""
-format_version: 0
 metadata: []
 ---
 
@@ -145,7 +143,6 @@ metadata: []
         "name-invalid",
         "name-directory-mismatch",
         "description-required",
-        "format-version-invalid",
         "metadata-invalid",
       ]),
     );
@@ -185,7 +182,6 @@ describe("listBehaviors", () => {
       `---
 name: valid-behavior
 description: A valid behavior.
-format_version: 2
 metadata:
   owner: evals
 ---
@@ -210,7 +206,6 @@ description: An invalid behavior.
     expect(records).toEqual([
       expect.objectContaining({
         name: "valid-behavior",
-        format_version: 2,
         metadata: { owner: "evals" },
       }),
     ]);

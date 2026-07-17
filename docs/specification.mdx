@@ -5,15 +5,15 @@ description: "The Agent Behavior format specification."
 
 ## Terminology
 
-- **Agent Behavior** is this format.
-- A **behavior spec** is one `.agents/behaviors/<name>/BEHAVIOR.md` file and its directory.
+- **Agent Behavior** is the name of this format.
+- A **behavior spec** consists of a `.agents/behaviors/<name>/BEHAVIOR.md` file and its directory. It can describe one or more behaviors.
 - A **behavior** is a recurring pattern of agent conduct.
 
-The key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+The key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** have the meanings defined in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
 
 ## Directory structure
 
-Behavior specs are stored under `.agents/behaviors/`. Each behavior spec is a directory with a `BEHAVIOR.md` file:
+Behavior specs live under `.agents/behaviors/`. Each spec has its own directory containing a `BEHAVIOR.md` file:
 
 ```text
 .agents/behaviors/
@@ -23,11 +23,11 @@ Behavior specs are stored under `.agents/behaviors/`. Each behavior spec is a di
     └── ...               # Optional additional files
 ```
 
-The directory name is the behavior's stable identifier and MUST match the `name` field in `BEHAVIOR.md`.
+The directory name is the behavior spec's stable identifier and MUST match the `name` field in `BEHAVIOR.md`.
 
 ## `BEHAVIOR.md` format
 
-The canonical file name is `BEHAVIOR.md`. Clients MUST look for `BEHAVIOR.md` when discovering behavior specs and MAY accept case variants. Case variants are valid when accepted by a client, but portable behavior specs SHOULD use `BEHAVIOR.md`.
+The canonical file name is `BEHAVIOR.md`. Clients MUST look for this exact name when discovering behavior specs and MAY also accept case variants. For portability, behavior specs SHOULD use `BEHAVIOR.md`.
 
 A `BEHAVIOR.md` file MUST contain YAML frontmatter followed by Markdown content.
 
@@ -36,12 +36,11 @@ A `BEHAVIOR.md` file MUST contain YAML frontmatter followed by Markdown content.
 | Field | Required | Constraints |
 | --- | --- | --- |
 | `name` | Yes | Max 64 characters. Lowercase letters, numbers, and hyphens only. MUST NOT start or end with a hyphen. MUST match the parent directory name. |
-| `description` | Yes | Max 1024 characters. Non-empty. Describes the behavior and when it applies. |
-| `format_version` | No | Positive integer. If omitted, clients MUST treat the behavior spec as format version `1`. |
+| `description` | Yes | Max 1024 characters. Non-empty. Describes the behavior spec's scope and when it applies. |
 | `license` | No | License name or reference to a bundled license file. |
 | `metadata` | No | Key-value mapping for client-specific metadata. |
 
-Clients MUST ignore unknown frontmatter fields for supported format versions.
+Clients MUST ignore unknown frontmatter fields.
 
 <Card>
 **Minimal example:**
@@ -54,26 +53,32 @@ description: Describe the recurring behavior and when it applies.
 
 # Behavior name
 
-Describe the behavior, including what evidence the agent SHOULD gather, what decision it SHOULD make, what action it SHOULD take, and how it SHOULD recover when evidence is incomplete.
+Describe the recurring conduct the agent should exhibit and what it should avoid.
 ```
 </Card>
 
 ### Body content
 
-The Markdown body describes the behavior. It SHOULD be written for people and agents reviewing traces, designing evals, or aligning prompts. It is not primarily runtime prompt text.
+The Markdown body describes one or more behaviors. It SHOULD be written for people and agents who review traces, design evals, or align prompts. It is not primarily runtime prompt text.
 
-A behavior is more than a low-level rule or one-off procedure. It describes how the agent gathers context, makes decisions, acts, and handles uncertainty.
+The body is free-form Markdown. Authors can use any headings, labels, order, or prose structure that communicates the behaviors clearly. Clients MUST treat the organization as free-form content.
+
+A behavior describes recurring agent conduct and when it matters, not merely low-level rules or one-off procedures.
 
 A behavior body SHOULD:
 
-- name a recurring behavior
-- describe when the behavior applies
+- name each recurring behavior clearly
+- describe when each behavior applies
 - describe desired conduct
 - describe undesired conduct or failure modes
 
+A single `BEHAVIOR.md` MAY group behaviors that belong to the same agent, product surface, or behavioral domain and should be discovered and reviewed together. Give each behavior a clear heading or label. Use separate specs when behaviors need independent ownership, discovery, or reuse.
+
+For example, a spec named `loop` could provide an agent overview followed by sections such as `## Page-grounded assistance`, `## Evidence-backed answers`, and `## Bias to action`. Each section describes a separate behavior but shares the file's frontmatter.
+
 ## Recommended behavior dimensions
 
-Each behavior SHOULD make these dimensions clear. The Markdown format does not require specific section headings.
+Authors are strongly encouraged to consider these dimensions for each substantive behavior. They make specs easier to review and translate into evals:
 
 - **Intent:** why the behavior matters and when it applies.
 - **Evidence:** what the agent SHOULD inspect, retrieve, preserve, or verify before deciding.
@@ -82,11 +87,11 @@ Each behavior SHOULD make these dimensions clear. The Markdown format does not r
 - **Recovery:** what the agent SHOULD do when the first path fails, evidence is incomplete, or the request is ambiguous.
 - **Failure modes:** what bad or unintended behavior the spec is meant to prevent.
 
-Omit a dimension if it would be trivial or redundant for a particular behavior.
+These dimensions are flexible guidance. They MAY appear in prose or be combined, renamed, reordered, or omitted when trivial or redundant.
 
-A useful distinction: evidence is the input to a decision; decision is the conclusion; execution is the visible action; recovery is what happens when the first path fails.
+When these dimensions apply, evidence is the input to a decision, the decision is the conclusion, execution is the visible action, and recovery is what happens when the first path fails.
 
-### Explicit schema example
+### Optional structured template
 
 ```markdown
 # Behavior name
@@ -104,16 +109,18 @@ A useful distinction: evidence is the input to a decision; decision is the concl
 **Failure modes:** What bad or unintended behavior this spec is meant to prevent.
 ```
 
+This template is one way to organize a behavior.
+
 ### Complete examples
 
-For complete behavior specs, see:
+For complete specs that use this template, see:
 
 - [cost-sensitive-actions](https://github.com/braintrustdata/agentbehavior/blob/main/examples/.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md)
 - [financial-work-verification](https://github.com/braintrustdata/agentbehavior/blob/main/examples/.agents/behaviors/financial-work-verification/BEHAVIOR.md)
 
 ## What belongs in a behavior spec
 
-Add a behavior spec when the behavior is important across many interactions or traces.
+Add a behavior when it matters across many interactions or traces. A spec may cover one behavior or several related behaviors.
 
 Good candidates are behaviors that are:
 
@@ -121,22 +128,16 @@ Good candidates are behaviors that are:
 - **High-impact**: mistakes affect correctness, trust, safety, cost, or user experience.
 - **Agent-defining**: they capture a design choice about what kind of agent this is.
 - **Ambiguous by default**: reasonable agents or prompt writers might behave differently unless the behavior is stated.
-- **Spread across context**: a reviewer would otherwise need to read prompts, skills, tool docs, examples, traces, or evals to infer the behavior.
+- **Spread across context**: reviewers would otherwise need to read prompts, skills, tool docs, examples, traces, or evals to infer the behavior.
 - **Useful for debugging**: naming the behavior helps explain failures in real traces.
 
-Do not use behavior specs for every instruction the agent has received. Leave out rare low-risk details, tool syntax, one-off procedures, slogans, and eval implementation details unless they express an important behavioral commitment.
-
-## Format versioning
-
-This document defines format version `1`. Behavior specs MAY declare their format version with the optional `format_version` frontmatter field. If `format_version` is omitted, clients MUST treat the behavior spec as format version `1`.
-
-Clients MUST ignore unknown frontmatter fields for supported format versions. Future format versions SHOULD preserve backward compatibility where possible. Clients that encounter an unsupported `format_version` SHOULD skip the behavior spec and surface a diagnostic.
+Do not use behavior specs for every agent instruction. Exclude rare, low-risk details, tool syntax, one-off procedures, slogans, and eval implementation details unless they express an important behavioral commitment.
 
 ## Optional directories
 
 ### `references/`
 
-Supporting material for reviewers or eval authors:
+Supporting material for reviewers and eval authors:
 
 - rationale documents
 - example traces
@@ -145,17 +146,17 @@ Supporting material for reviewers or eval authors:
 
 ## Discovery and use
 
-Tools that support Agent Behavior SHOULD discover behavior specs by scanning `.agents/behaviors/` for subdirectories containing `BEHAVIOR.md` or a supported case variant.
+Tools that support Agent Behavior SHOULD scan `.agents/behaviors/` for subdirectories containing `BEHAVIOR.md` or a supported case variant.
 
-At minimum, a discovered behavior record contains:
+At minimum, a discovered behavior spec record contains:
 
 | Field | Description |
 | --- | --- |
-| `name` | Stable behavior identifier from frontmatter |
-| `description` | Short description from frontmatter |
+| `name` | Stable behavior spec identifier from frontmatter |
+| `description` | Short description of the spec's scope from frontmatter |
 | `location` | Absolute or project-relative path to `BEHAVIOR.md` |
 
-Unlike [skills](https://agentskills.io/home), behaviors are not primarily loaded to help the model complete the next task. Clients SHOULD not automatically inject all behavior specs into runtime prompts unless they are intentionally building a behavior-conditioned agent.
+Unlike [skills](https://agentskills.io/home), behaviors are not primarily loaded to help a model complete its next task. Clients SHOULD not inject all behavior specs into runtime prompts unless intentionally building a behavior-conditioned agent.
 
 Behavior specs are usually loaded when:
 
@@ -167,7 +168,7 @@ Behavior specs are usually loaded when:
 
 ## Validation
 
-Validation has two layers: structural validity, which tools can check mechanically, and quality, which requires human or model judgment.
+Validation has two layers: structural validity, which tools can check, and quality, which requires human or model judgment.
 
 ### Structural validity
 
@@ -184,17 +185,18 @@ A structurally valid behavior directory:
 - uses a `name` that matches the parent directory
 - includes a non-empty `description` field
 - uses a `description` that is at most 1024 characters
-- if present, uses `format_version` as a positive integer
 - if present, uses `metadata` as a key-value mapping
 
-Clients SHOULD skip structurally invalid behavior specs and surface a diagnostic rather than loading a partial or ambiguous spec.
+Clients SHOULD skip structurally invalid specs and surface a diagnostic rather than load partial or ambiguous content.
 
 ### Quality criteria
 
 A useful behavior spec SHOULD:
 
-- name a recurring behavior
-- describe when the behavior applies
+- clearly distinguish the recurring behavior or behaviors it covers
+- describe when each behavior applies
 - describe desired conduct
 - describe undesired conduct or failure modes
-- make clear what evidence the agent SHOULD gather, what decision it SHOULD make, what action it SHOULD take, and how it SHOULD recover when evidence is incomplete
+- give a reviewer enough context to assess the behavior in a trace
+
+Authors SHOULD use the recommended dimensions when they add clarity. Structural validation applies only to the directory and frontmatter requirements; body organization remains free-form, including for specs that group multiple behaviors.

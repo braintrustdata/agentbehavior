@@ -1,0 +1,37 @@
+{
+  "name": "@agentbehavior/support-ticket-triage-agent",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Toy support triage agent that follows the Agent Behavior support-ticket-triage spec.",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "agent": "vp pack && node dist/cli.mjs",
+    "build": "vp pack",
+    "check": "vp check",
+    "eval": "bt eval --runner tsx support-ticket-triage.eval.ts",
+    "eval:local": "bt eval --runner tsx --no-send-logs support-ticket-triage.eval.ts",
+    "start": "vp pack && node dist/cli.mjs",
+    "test": "vp test --run",
+    "typecheck:eval": "tsc -p tsconfig.eval.json"
+  },
+  "dependencies": {
+    "agentbehavior": "workspace:*",
+    "autoevals": "^0.3.0",
+    "braintrust": "^3.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "tsx": "^4.22.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

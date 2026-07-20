@@ -55,8 +55,12 @@ See the canonical examples for complete behavior specs:
 
 - [`cost-sensitive-actions`](examples/.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md) — cost and budget tradeoffs
 - [`financial-work-verification`](examples/.agents/behaviors/financial-work-verification/BEHAVIOR.md) — quality and correctness for financial work
+- [`support-ticket-triage`](examples/.agents/behaviors/support-ticket-triage/BEHAVIOR.md) — free-form conduct for a support triage agent
 
-There is also a small runnable example agent at [`examples/financial-verification-agent`](examples/financial-verification-agent/README.md) that uses the `financial-work-verification` behavior with the Braintrust Gateway and includes a Braintrust LLM-as-a-judge eval.
+Runnable examples with Braintrust evals:
+
+- [`financial-verification-agent`](examples/financial-verification-agent/README.md) uses the `financial-work-verification` behavior.
+- [`support-ticket-triage-agent`](examples/support-ticket-triage-agent/README.md) evaluates the free-form `support-ticket-triage` behavior with section-specific classifiers and an LLM judge.
 
 ## CLI validator
 

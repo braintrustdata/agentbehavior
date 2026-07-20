@@ -77,6 +77,7 @@ The documentation source is in `docs/`. Until hosted docs are published, use the
 - [Specification](docs/specification.mdx)
 - [Quickstart](docs/behavior-creation/quickstart.mdx)
 - [Client implementation guide](docs/client-implementation/adding-behaviors-support.mdx)
+- [Portable authoring skill](.agents/skills/writing-agent-behavior/SKILL.md)
 
 ## License
 

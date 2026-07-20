@@ -53,10 +53,25 @@ jobs:
           unzip -q docs.zip -d pages
           touch pages/.nojekyll
 
+      - name: Archive GitHub Pages artifact
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory pages \
+            -cf "$RUNNER_TEMP/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            .
+
+      # upload-pages-artifact uses an unpinned upload-artifact reference internally,
+      # so create its expected artifact directly to satisfy the organization policy.
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          path: pages
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
 
       - name: Deploy to GitHub Pages
         id: deployment

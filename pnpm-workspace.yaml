@@ -9,3 +9,12 @@ trustPolicy: no-downgrade
 # Ignore the check for packages published more than 30 days ago (pnpm 10.27+)
 # Useful for older packages that pre-date provenance support
 trustPolicyIgnoreAfter: 43200 # minutes (30 days)
+
+# Mintlify packages import these packages at runtime without declaring them.
+packageExtensions:
+  "@mintlify/link-rot@3.0.1107":
+    dependencies:
+      react: 19.2.3
+  "@mintlify/scraping@4.0.789":
+    dependencies:
+      openapi-types: 12.1.3

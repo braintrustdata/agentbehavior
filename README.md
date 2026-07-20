@@ -6,7 +6,7 @@ A standardized way to describe, review, and evaluate the recurring behaviors an 
 
 Agent Behavior is a lightweight, open format for documenting durable behavioral commitments for AI agents.
 
-See the [specification](docs/specification.mdx#terminology) for terminology.
+See the [specification](https://sturdy-adventure-9m3697g.pages.github.io/specification#terminology) for terminology.
 
 A behavior is not a low-level rule, a one-off task procedure, or a tool manual. It describes how an agent gathers context, makes decisions, acts, and recovers when it does not know enough.
 
@@ -76,11 +76,11 @@ It validates structural requirements from the specification, including `BEHAVIOR
 
 ## Documentation
 
-The documentation source is in `docs/`. Until hosted docs are published, use these source files:
+The documentation is published on [GitHub Pages](https://sturdy-adventure-9m3697g.pages.github.io/). Its source is in `docs/`.
 
-- [Specification](docs/specification.mdx)
-- [Quickstart](docs/behavior-creation/quickstart.mdx)
-- [Client implementation guide](docs/client-implementation/adding-behaviors-support.mdx)
+- [Specification](https://sturdy-adventure-9m3697g.pages.github.io/specification)
+- [Quickstart](https://sturdy-adventure-9m3697g.pages.github.io/behavior-creation/quickstart)
+- [Client implementation guide](https://sturdy-adventure-9m3697g.pages.github.io/client-implementation/adding-behaviors-support)
 
 ## License
 

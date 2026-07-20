@@ -83,6 +83,7 @@ The documentation is published on [GitHub Pages](https://sturdy-adventure-9m3697
 - [Specification](https://sturdy-adventure-9m3697g.pages.github.io/specification)
 - [Quickstart](https://sturdy-adventure-9m3697g.pages.github.io/behavior-creation/quickstart)
 - [Client implementation guide](https://sturdy-adventure-9m3697g.pages.github.io/client-implementation/adding-behaviors-support)
+- [Portable authoring skill](.agents/skills/writing-agent-behavior/SKILL.md)
 
 ## License
 

@@ -56,13 +56,13 @@ See the canonical examples for complete behavior specs:
 - [`cost-sensitive-actions`](examples/.agents/behaviors/cost-sensitive-actions/BEHAVIOR.md) — cost and budget tradeoffs
 - [`financial-work-verification`](examples/.agents/behaviors/financial-work-verification/BEHAVIOR.md) — quality and correctness for financial work
 - [`support-ticket-triage`](examples/.agents/behaviors/support-ticket-triage/BEHAVIOR.md) — free-form conduct for a support triage agent
-- [`primary-source-tax-research`](examples/.agents/behaviors/primary-source-tax-research/BEHAVIOR.md) — primary-source verification for tax research
+- [`primary-source-tax-research`](examples/.agents/behaviors/primary-source-tax-research/BEHAVIOR.md) — skill-first and primary-source conduct for tax research
 
 Runnable examples with Braintrust evals:
 
 - [`financial-verification-agent`](examples/financial-verification-agent/README.md) uses the `financial-work-verification` behavior.
 - [`support-ticket-triage-agent`](examples/support-ticket-triage-agent/README.md) evaluates the free-form `support-ticket-triage` behavior with section-specific classifiers and an LLM judge.
-- [`examples/tax-research-behavior-eval`](examples/tax-research-behavior-eval/README.md) keeps the behavior out of the evaluated agent's context and demonstrates a `true`/`false`/`na` judge convention for H2-structured specs and recorded trajectories.
+- [`tax-research-behavior-eval`](examples/tax-research-behavior-eval/README.md) uses a runtime tax-research skill, keeps the behavior out of the evaluated agent's context, and demonstrates a `true`/`false`/`na` judge convention for H2-structured specs and recorded trajectories.
 
 ## CLI validator
 

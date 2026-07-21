@@ -28,7 +28,7 @@ A useful candidate usually has all three:
 - a meaningful choice about how the agent should act
 - evidence in a trajectory that could show whether the choice occurred
 
-Do not elevate generic virtues, tool syntax, one-off procedures, implementation details, or a disguised scoring rubric.
+Do not elevate generic virtues, tool syntax, one-off procedures, implementation details, or a disguised scoring rubric. A named runtime mechanism can be a behavior when using that mechanism is itself a durable, recurring control point and the trajectory can prove whether it happened; make that reason explicit in the spec.
 
 ## Choose the unit
 

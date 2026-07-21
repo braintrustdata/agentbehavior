@@ -6,13 +6,23 @@ This example evaluates recorded agent trajectories against the canonical behavio
 examples/.agents/behaviors/primary-source-tax-research/BEHAVIOR.md
 ```
 
+The trajectories also show the evaluated agent reading this runtime skill:
+
+```text
+examples/.agents/skills/tax-research/SKILL.md
+```
+
 The scenario uses a fictional tax code. It demonstrates behavior evaluation, not tax advice.
+
+This is a runnable eval over six hand-authored, synthetic trajectories. It is not a live tool-using agent harness: the fixtures stand in for recorded events from an agent, and the Braintrust eval runs the behavior judge over those events. A production integration would pass its own recorded trajectories to the same judge contract.
 
 This evaluator adopts one optional convention on top of the core Agent Behavior format: every H2 is judged independently as a meta-behavior. The format itself still permits free-form bodies and does not prescribe an assessment method.
 
 ## What it demonstrates
 
 - The evaluated agent never receives the behavior spec.
+- The evaluated trajectories represent an agent receiving the tax-research runtime skill, and record when the agent reads it.
+- One meta-behavior checks that the skill is read before any search or source open; another checks that primary authority is read before the answer.
 - Web search and secondary sources can route research without becoming the final authority.
 - A correct answer still fails when the trace never shows the required primary-source research.
 - The judge evaluates each H2 meta-behavior and each triggered occurrence independently.
@@ -20,7 +30,16 @@ This evaluator adopts one optional convention on top of the core Agent Behavior 
 - Code, rather than the model, folds occurrence verdicts into per-H2 and file-level `true`, `false`, or `na` verdicts.
 - Braintrust records `true` as `1`, `false` as `0`, and `na` as a null score outside the compliance denominator.
 
-The five fixtures cover secondary-to-primary research, direct primary research, secondary-only research, a correct answer without research, and an inapplicable tax-adjacent writing task.
+The fixtures deliberately separate the two behaviors so the judge can be calibrated at both the H2 and file level:
+
+| Fixture                    | Skill before research | Primary source before answer | File verdict |
+| -------------------------- | --------------------- | ---------------------------- | ------------ |
+| `secondary-then-primary`   | `true`                | `true`                       | `true`       |
+| `primary-directly`         | `true`                | `true`                       | `true`       |
+| `skill-read-too-late`      | `false`               | `true`                       | `false`      |
+| `secondary-only`           | `true`                | `false`                      | `false`      |
+| `correct-without-research` | `na`                  | `false`                      | `false`      |
+| `tax-adjacent-writing`     | `na`                  | `na`                         | `na`         |
 
 ## Judge contract
 
@@ -30,7 +49,7 @@ The judge implementation for this H2 convention is in `src/judge.ts`. It asks th
 2. If every meta-behavior is `na`, the behavior is `na`.
 3. Otherwise, the behavior is `true`.
 
-The eval also emits `judge_matches_expected` so the toy fixtures calibrate the judge separately from the behavior-compliance score.
+The eval also emits `judge_matches_expected` so the toy fixtures calibrate every H2 verdict and the folded file verdict separately from the behavior-compliance score.
 
 ## Test and build offline
 

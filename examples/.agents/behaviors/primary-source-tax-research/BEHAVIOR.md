@@ -1,9 +1,17 @@
 ---
 name: primary-source-tax-research
-description: Tax research conduct for consulting primary sources before answering tax questions.
+description: Tax research conduct for loading the research method and consulting primary sources before answering.
 ---
 
 # Primary-source tax research
+
+## Read the tax research skill before beginning source research
+
+When beginning source research to answer a tax question, the agent first reads the tax research skill, before searching or opening a source. Reading the skill after the first search or source open does not satisfy this behavior.
+
+Each tax research process is one occurrence.
+
+**Why:** The skill is the versioned source of the current research method. Reading it before research is the observable control that ensures the source search follows that method.
 
 ## Consult primary sources before answering
 
@@ -11,4 +19,4 @@ When answering a tax question, the agent may use web search and secondary source
 
 Each tax conclusion is one occurrence.
 
-**Why:** Secondary summaries can omit exceptions, effective dates, and jurisdictional limits. The primary source shows the rule the answer actually depends on.
+**Why:** The users of this workflow are accountants who expect to be able to tie each tax conclusion back to the primary source that supports it.

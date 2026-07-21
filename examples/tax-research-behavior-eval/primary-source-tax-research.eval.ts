@@ -9,7 +9,7 @@ import {
   taxResearchCases,
   type AgentTrajectory,
   type BehaviorJudgment,
-  type BehaviorVerdict,
+  type ExpectedBehaviorJudgment,
 } from "./src/index.js";
 
 interface EvalMetadata extends Record<string, unknown> {
@@ -25,7 +25,7 @@ const gatewayConfig = gatewayConfigFromEnv();
 const behaviorComplianceScore: EvalScorer<
   AgentTrajectory,
   BehaviorJudgment,
-  BehaviorVerdict,
+  ExpectedBehaviorJudgment,
   EvalMetadata
 > = ({ output }) => ({
   name: "behavior_compliance",
@@ -39,41 +39,60 @@ const behaviorComplianceScore: EvalScorer<
 const judgeCalibrationScore: EvalScorer<
   AgentTrajectory,
   BehaviorJudgment,
-  BehaviorVerdict,
+  ExpectedBehaviorJudgment,
   EvalMetadata
-> = ({ output, expected }) => ({
-  name: "judge_matches_expected",
-  score: output.verdict === expected ? 1 : 0,
-  metadata: {
-    expectedVerdict: expected,
-    actualVerdict: output.verdict,
-  },
-});
+> = ({ output, expected }) => {
+  const actualMetaBehaviorVerdicts = Object.fromEntries(
+    output.metaBehaviors.map((metaBehavior) => [metaBehavior.name, metaBehavior.verdict]),
+  );
+  const metaBehaviorVerdictsMatch =
+    Object.keys(actualMetaBehaviorVerdicts).length ===
+      Object.keys(expected.metaBehaviorVerdicts).length &&
+    Object.entries(expected.metaBehaviorVerdicts).every(
+      ([name, verdict]) => actualMetaBehaviorVerdicts[name] === verdict,
+    );
 
-Eval<AgentTrajectory, BehaviorJudgment, BehaviorVerdict, EvalMetadata>("Agent Behavior Examples", {
-  experimentName: "primary-source-tax-research",
-  data: taxResearchCases.map((testCase) => ({
-    input: testCase.trajectory,
-    expected: testCase.expectedVerdict,
+  return {
+    name: "judge_matches_expected",
+    score: output.verdict === expected.verdict && metaBehaviorVerdictsMatch ? 1 : 0,
     metadata: {
-      caseDescription: testCase.trajectory.description,
-      expectation: testCase.expectation,
-    },
-  })),
-  task: async (trajectory) =>
-    judgeBehavior({
-      behavior,
-      trajectory,
-      gateway: {
-        model: gatewayConfig.model,
+      expected,
+      actual: {
+        verdict: output.verdict,
+        metaBehaviorVerdicts: actualMetaBehaviorVerdicts,
       },
-    }),
-  scores: [behaviorComplianceScore, judgeCalibrationScore],
-  metadata: {
-    behavior: behavior.name,
-    behaviorLocation: behavior.location,
-    judgeModel: gatewayConfig.model,
-    gatewayBaseUrl: gatewayConfig.baseUrl,
-    evaluatedAgentReceivedBehavior: false,
+    },
+  };
+};
+
+Eval<AgentTrajectory, BehaviorJudgment, ExpectedBehaviorJudgment, EvalMetadata>(
+  "Agent Behavior Examples",
+  {
+    experimentName: "primary-source-tax-research",
+    data: taxResearchCases.map((testCase) => ({
+      input: testCase.trajectory,
+      expected: testCase.expected,
+      metadata: {
+        caseDescription: testCase.trajectory.description,
+        expectation: testCase.expectation,
+      },
+    })),
+    task: async (trajectory) =>
+      judgeBehavior({
+        behavior,
+        trajectory,
+        gateway: {
+          model: gatewayConfig.model,
+        },
+      }),
+    scores: [behaviorComplianceScore, judgeCalibrationScore],
+    metadata: {
+      behavior: behavior.name,
+      behaviorLocation: behavior.location,
+      judgeModel: gatewayConfig.model,
+      gatewayBaseUrl: gatewayConfig.baseUrl,
+      evaluatedAgentReceivedBehavior: false,
+      trajectoriesIncludeTaxResearchSkillRead: true,
+    },
   },
-});
+);

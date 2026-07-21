@@ -9,6 +9,10 @@ export interface LoadedBehavior {
   location: string;
 }
 
+export const READ_TAX_RESEARCH_SKILL_BEHAVIOR =
+  "Read the tax research skill before beginning source research";
+export const CONSULT_PRIMARY_SOURCES_BEHAVIOR = "Consult primary sources before answering";
+
 const behaviorSpecUrl = new URL(
   "../../.agents/behaviors/primary-source-tax-research/BEHAVIOR.md",
   import.meta.url,

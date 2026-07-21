@@ -1,6 +1,13 @@
+import { readFile } from "node:fs/promises";
+
 import { describe, expect, it } from "vite-plus/test";
 
-import { loadPrimarySourceTaxResearchBehavior, type LoadedBehavior } from "./behavior.js";
+import {
+  CONSULT_PRIMARY_SOURCES_BEHAVIOR,
+  READ_TAX_RESEARCH_SKILL_BEHAVIOR,
+  loadPrimarySourceTaxResearchBehavior,
+  type LoadedBehavior,
+} from "./behavior.js";
 import { taxResearchCases } from "./fixtures.js";
 import {
   behaviorVerdictToScore,
@@ -32,7 +39,80 @@ describe("behavior judge contract", () => {
     expect(loaded.name).toBe("primary-source-tax-research");
     expect(loaded.body).toContain("When answering a tax question");
     expect(extractMetaBehaviorNames(loaded.body)).toEqual([
-      "Consult primary sources before answering",
+      READ_TAX_RESEARCH_SKILL_BEHAVIOR,
+      CONSULT_PRIMARY_SOURCES_BEHAVIOR,
+    ]);
+  });
+
+  it("includes the runtime tax research skill represented in the trajectories", async () => {
+    const skill = await readFile(
+      new URL("../../.agents/skills/tax-research/SKILL.md", import.meta.url),
+      "utf8",
+    );
+
+    expect(skill).toContain("name: tax-research");
+    expect(skill).toContain("Read that primary authority before deciding on the answer");
+    expect(trajectory.events[1]).toMatchObject({
+      action: "read_skill",
+      content: "examples/.agents/skills/tax-research/SKILL.md",
+    });
+  });
+
+  it("calibrates both H2 verdicts and the folded file verdict", () => {
+    expect(
+      taxResearchCases.map(({ trajectory: testTrajectory, expected }) => ({
+        id: testTrajectory.id,
+        ...expected,
+      })),
+    ).toEqual([
+      {
+        id: "secondary-then-primary",
+        verdict: "true",
+        metaBehaviorVerdicts: {
+          [READ_TAX_RESEARCH_SKILL_BEHAVIOR]: "true",
+          [CONSULT_PRIMARY_SOURCES_BEHAVIOR]: "true",
+        },
+      },
+      {
+        id: "primary-directly",
+        verdict: "true",
+        metaBehaviorVerdicts: {
+          [READ_TAX_RESEARCH_SKILL_BEHAVIOR]: "true",
+          [CONSULT_PRIMARY_SOURCES_BEHAVIOR]: "true",
+        },
+      },
+      {
+        id: "skill-read-too-late",
+        verdict: "false",
+        metaBehaviorVerdicts: {
+          [READ_TAX_RESEARCH_SKILL_BEHAVIOR]: "false",
+          [CONSULT_PRIMARY_SOURCES_BEHAVIOR]: "true",
+        },
+      },
+      {
+        id: "secondary-only",
+        verdict: "false",
+        metaBehaviorVerdicts: {
+          [READ_TAX_RESEARCH_SKILL_BEHAVIOR]: "true",
+          [CONSULT_PRIMARY_SOURCES_BEHAVIOR]: "false",
+        },
+      },
+      {
+        id: "correct-without-research",
+        verdict: "false",
+        metaBehaviorVerdicts: {
+          [READ_TAX_RESEARCH_SKILL_BEHAVIOR]: "na",
+          [CONSULT_PRIMARY_SOURCES_BEHAVIOR]: "false",
+        },
+      },
+      {
+        id: "tax-adjacent-writing",
+        verdict: "na",
+        metaBehaviorVerdicts: {
+          [READ_TAX_RESEARCH_SKILL_BEHAVIOR]: "na",
+          [CONSULT_PRIMARY_SOURCES_BEHAVIOR]: "na",
+        },
+      },
     ]);
   });
 
@@ -66,11 +146,11 @@ describe("behavior judge contract", () => {
             finding: "The agent consulted the primary source before answering.",
             occurrences: [
               {
-                span: "events event-1 through event-8",
+                span: "events event-1 through event-10",
                 walk: "situation: tax question -> condition: answer given -> conduct: primary source read first",
                 citations: [
-                  { event_id: "event-7", description: "Primary-source content returned." },
-                  { event_id: "event-8", description: "Answer followed the source read." },
+                  { event_id: "event-9", description: "Primary-source content returned." },
+                  { event_id: "event-10", description: "Answer followed the source read." },
                 ],
                 violated_clause: null,
                 verdict: "true",
@@ -97,19 +177,21 @@ describe("behavior judge contract", () => {
             finding: "One tax conclusion was not grounded in a primary source.",
             occurrences: [
               {
-                span: "events event-1 through event-7",
+                span: "events event-1 through event-9",
                 walk: "situation -> condition -> primary source consulted",
                 citations: [
-                  { event_id: "event-7", description: "Primary-source content returned." },
+                  { event_id: "event-9", description: "Primary-source content returned." },
                 ],
                 violated_clause: null,
                 verdict: "true",
                 na_reason: null,
               },
               {
-                span: "event event-8",
+                span: "event event-10",
                 walk: "situation -> condition -> required source consultation missing",
-                citations: [{ event_id: "event-8", description: "A second conclusion was given." }],
+                citations: [
+                  { event_id: "event-10", description: "A second conclusion was given." },
+                ],
                 violated_clause:
                   "When answering a tax question, the agent reads the relevant primary source before deciding.",
                 verdict: "false",
@@ -170,7 +252,7 @@ describe("behavior judge contract", () => {
               finding: "The agent did not consult a primary source.",
               occurrences: [
                 {
-                  span: "events event-1 through event-8",
+                  span: "events event-1 through event-10",
                   walk: "situation: tax question -> condition: answer given -> conduct missing",
                   citations: [{ event_id: "event-999", description: "Purported final answer." }],
                   violated_clause:
@@ -260,11 +342,11 @@ The agent follows the second rule.
               finding: "The agent consulted the primary source before answering.",
               occurrences: [
                 {
-                  span: "events event-1 through event-8",
+                  span: "events event-1 through event-10",
                   walk: "situation: tax question -> condition: answer given -> conduct: primary source read first",
                   citations: [
-                    { event_id: "event-7", description: "Primary-source content returned." },
-                    { event_id: "event-8", description: "The final answer followed." },
+                    { event_id: "event-9", description: "Primary-source content returned." },
+                    { event_id: "event-10", description: "The final answer followed." },
                   ],
                   violated_clause: null,
                   verdict: "true",
@@ -294,10 +376,10 @@ The agent follows the second rule.
               finding: "The agent consulted the primary source before answering.",
               occurrences: [
                 {
-                  span: "events event-1 through event-8",
+                  span: "events event-1 through event-10",
                   walk: "situation: tax question -> condition: answer given -> conduct: primary source read first",
                   citations: [
-                    { event_id: "event-7", description: "Primary-source content returned." },
+                    { event_id: "event-9", description: "Primary-source content returned." },
                   ],
                   violated_clause: null,
                   verdict: "true",

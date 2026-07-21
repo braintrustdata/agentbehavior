@@ -1,8 +1,14 @@
-export { loadPrimarySourceTaxResearchBehavior, type LoadedBehavior } from "./behavior.js";
+export {
+  CONSULT_PRIMARY_SOURCES_BEHAVIOR,
+  READ_TAX_RESEARCH_SKILL_BEHAVIOR,
+  loadPrimarySourceTaxResearchBehavior,
+  type LoadedBehavior,
+} from "./behavior.js";
 export { loadPackageEnvironment, packageRootFromImportMeta } from "./env.js";
 export {
   taxResearchCases,
   type AgentTrajectory,
+  type ExpectedBehaviorJudgment,
   type TaxResearchCase,
   type TrajectoryEvent,
 } from "./fixtures.js";

@@ -53,8 +53,13 @@ You can use this behavior spec to:
 - revise prompts or tools when traces show the behavior is missing
 - communicate intended agent conduct to teammates
 
+## Use the portable authoring skill
+
+Agents that discover repository skills can use [`.agents/skills/writing-agent-behavior`](https://github.com/braintrustdata/agentbehavior/tree/main/.agents/skills/writing-agent-behavior) directly in this repository. To use it in another project, copy that entire directory to `<project>/.agents/skills/writing-agent-behavior/`. The directory includes the complete Agent Behavior specification needed by the skill and has no runtime dependency on this source checkout or external documentation.
+
 ## Next steps
 
 - Read the [specification](/specification)
+- Use the `writing-agent-behavior` skill for a source-grounded authoring and calibration workflow
 - Add behaviors to an existing related spec or create more specs under `.agents/behaviors/`
 - Use behavior specs as the source of truth when creating evals or trace-review rubrics

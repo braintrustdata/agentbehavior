@@ -7,11 +7,11 @@ description: Authors and revises Agent Behavior BEHAVIOR.md specs that capture r
 
 Write the smallest durable behavior spec that lets people and evaluators distinguish acceptable from unacceptable conduct across real trajectories.
 
-The repository's Agent Behavior specification is authoritative. This skill adds an authoring process; it does not add required body fields or change the free-form format.
+The bundled [Agent Behavior specification](references/agent-behavior-specification.md) is the complete format contract for this skill. The skill does not require the Agent Behavior source repository, a network connection, or any documentation outside this directory.
 
 ## Start from source evidence
 
-1. If the Agent Behavior source repository is present, read `docs/specification.mdx`, especially terminology, body content, and validation. Otherwise read the bundled [format contract](references/format-contract.md). A repository's newer local contract wins over the bundled summary.
+1. Read the bundled [Agent Behavior specification](references/agent-behavior-specification.md) before authoring or validating a behavior. A target project may add local conventions, but do not depend on a source checkout or external documentation for the core format.
 2. Inspect related `BEHAVIOR.md` files before creating a new one.
 3. Read the actual prompts, skills, tool instructions, traces, or user decisions that establish the intended conduct. Separate observed behavior from intended behavior.
 4. Identify whether the task is a new spec, a revision, a split, or a merge. Preserve existing intent unless the evidence explicitly changes it.
@@ -104,7 +104,7 @@ If the repository provides the Agent Behavior CLI, run its validator against the
 agentbehavior validate .agents/behaviors/<name>
 ```
 
-If the command is unavailable, do not install it without authorization. Validate the path and frontmatter manually against [format-contract.md](references/format-contract.md), and report that CLI validation was not run.
+If the command is unavailable, do not install it without authorization. Validate the path, frontmatter, and body manually against the bundled [Agent Behavior specification](references/agent-behavior-specification.md), and report that CLI validation was not run.
 
 Then:
 
@@ -131,4 +131,4 @@ If those answers require oral context, keep editing.
 
 - [Deciding what to save](references/deciding-what-to-save.md)
 - [Calibrating with trajectories](references/calibrating-with-trajectories.md)
-- [Portable format contract](references/format-contract.md)
+- [Bundled Agent Behavior specification](references/agent-behavior-specification.md)

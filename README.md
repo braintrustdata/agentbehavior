@@ -81,7 +81,7 @@ Full documentation is published at [agentbehavior.dev](https://agentbehavior.dev
 
 ## Contributing
 
-Agent Behavior began as a collaboration between [Basis](https://www.getbasis.ai/)
+Agent behavior began as a collaboration between [Basis](https://www.getbasis.ai/)
 and [Braintrust](https://www.braintrust.dev/). Contributions are welcome. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and useful commands.
 

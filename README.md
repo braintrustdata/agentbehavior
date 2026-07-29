@@ -16,22 +16,46 @@ A behavior spec is a `BEHAVIOR.md` file with YAML frontmatter and a free-form Ma
 
 ```text
 .agents/behaviors/
-└── cost-sensitive-actions/
+└── validate-rendered-deck/
     ├── BEHAVIOR.md       # Required: YAML frontmatter and behavior description
     └── references/       # Optional: rationale, examples, background docs
 ```
 
 ```markdown
 ---
-name: cost-sensitive-actions
-description: Ensure the agent surfaces material costs, asks before expensive actions, and offers lower-cost alternatives when appropriate.
+name: validate-rendered-deck
+description: Render the current PowerPoint before delivery, inspect it for visual issues, and revalidate after fixes.
 ---
 
-# Cost-sensitive actions
+# Validate the rendered deck before returning it
 
-Describe when the behavior applies, what cost evidence the agent should gather,
-how it should make the tradeoff visible, and what it should avoid.
+**Intent:** Each time the agent submits or resubmits a created or edited slide
+deck, ensure the user receives a visually usable deck, not merely valid
+PowerPoint code.
+
+**Evidence:** The current saved deck and slide images rendered from that
+version. A render made before the latest edit is not evidence about the deck
+now being returned.
+
+**Decision:** Determine whether the current rendered deck has formatting,
+layout, readability, or other visible issues that make it unsuitable to
+return.
+
+**Execution:** Render the current deck to images and inspect those images
+before returning it.
+
+**Recovery:** If inspection finds a fixable issue, fix the deck, render the
+updated version, and inspect the new render. If the agent cannot render or
+inspect the deck, it should not claim the deck was visually validated.
+
+**Failure modes:** Returning an unrendered deck; relying on a stale render;
+fixing an issue without re-rendering; missing a visual problem that code-level
+checks cannot reveal.
 ```
+
+These six labels are optional. They are one way to organize a behavior; plain
+Markdown works too. For a domain-specific example, see
+[`primary-source-tax-research`](examples/.agents/behaviors/primary-source-tax-research/BEHAVIOR.md).
 
 ## Get started
 
@@ -57,7 +81,9 @@ Full documentation is published at [agentbehavior.dev](https://agentbehavior.dev
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and useful commands.
+Agent Behavior began as a collaboration between [Basis](https://www.getbasis.ai/)
+and [Braintrust](https://www.braintrust.dev/). Contributions are welcome. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for development setup and useful commands.
 
 ## License
 
